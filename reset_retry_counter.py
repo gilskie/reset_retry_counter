@@ -8,9 +8,10 @@ from prettytable import from_db_cursor
 def read_configuration_file():
     tool_configuration = configparser.ConfigParser()
 
-    sandbox_config_path = sys.path[0] + '\configurationFile.ini'
+    # sandbox_config_path = sys.path[0] + '\configurationFile.ini'
+    live_config_path = sys.executable.replace("reset_retry_counter.exe", "configurationFile.ini")
 
-    tool_configuration.read(sandbox_config_path)
+    tool_configuration.read(live_config_path)
 
     default_settings = tool_configuration["DEFAULT"]
 
@@ -63,10 +64,6 @@ def reset_from_database(server, database, db_user, db_password, zip_files):
         confirmation = input("Info: Enter 'y' to reset retry counter to 0 on displayed filename:")
 
         if confirmation.lower() == 'y':
-            # print(f"{for_update_files.get_string(fields=['FileName'])}")
-            # for_update_files.header = False
-            # for_update_files.border = False
-
             sql_query_update = "UPDATE [dbo].[FTPCrawlerDB] " \
                                "SET [RetryCounter] = 0 " \
                                "WHERE FileName in('" + for_update_files.get_string(fields=['FileName'],
@@ -97,7 +94,6 @@ def main():
                             db_user,
                             db_password,
                             zip_files)
-        # print(f"zip files: {zip_files}")
 
     except Exception as e:
         print(f"Error: {e}")
